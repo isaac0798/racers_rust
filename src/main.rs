@@ -113,15 +113,30 @@ fn view(_app: &App, _model: &Model, frame: Frame) {
     draw.ellipse().color(WHITE).w(5.0).h(5.0).x_y(ball.position.x * 3.0, ball.position.y * 3.0);
 
     let sine = _app.time.sin();
+
+
     let slowersine = (_app.time / 2.0).sin();
 
     // Map the sine wave functions to ranges between the boundaries of the window
-    let x = map_range(sine, -1.0, 1.0, 0.0, pitch.height);
-    let y = map_range(slowersine, -1.0, 1.0, 0.0, pitch.width);
+    let x = map_range(1.0, -1.0, 1.0, 0.0, ball.position.x * 3.0);
+    let y = map_range(run(me, _app.time), -1.0, 1.0, 0.0, ball.position.y * 3.0);
 
     draw.ellipse().color(RED).w(5.0).h(5.0).x_y(x, y);
 
     draw.to_frame(_app, &frame).unwrap();
+}
+
+fn run(player: Player, time: f32) -> f32 {
+    let distance = ((player.speed * 0.01) * time) - 1.0;
+
+    if distance > 1.0 {
+        return 1.0;
+    } else if distance < -1.0 {
+        return -1.0;
+    }
+
+    return distance;
+
 }
 
 fn race(player1: Player, player2: Player, ball: Ball) -> Player {
